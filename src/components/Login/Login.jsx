@@ -12,7 +12,7 @@ const Login = () => {
   const [formData, setFormData] = useState({}); // Updated state name
   // console.log(formData);
 
-  const [user, setUser] = useState([]);
+  const [users, setUsers] = useState([]);
 
   // console.log(user)
   const handleSubmit = (event) => {
@@ -27,7 +27,7 @@ const Login = () => {
       .then((result) => {
         const loggedInUser = result.user;
         console.log(loggedInUser);
-        setUser(loggedInUser);
+        setUsers(loggedInUser);
       })
       .catch((error) => {
         console.log(error);
@@ -85,6 +85,16 @@ const Login = () => {
         <button className="btn btn-ghost" onClick={handleGoogleSignIn}>
           google
         </button>
+      </div>
+
+      <div className="p-15 m-15 text-5xl">
+        {
+          users && <div>
+            
+            {users.displayName} 
+            
+            <h1>{users.email}</h1></div>
+        }
       </div>
     </div>
   );
