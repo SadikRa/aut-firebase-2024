@@ -1,4 +1,4 @@
-import { getAuth, signInWithPopup, signOut } from "firebase/auth";
+import { getAuth, GithubAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { app } from "../../firebase/firebase.config";
 import { useState } from "react";
 // import { GoogleAuthProvider } from "firebase/auth/web-extension";
@@ -8,6 +8,7 @@ const Login = () => {
   const auth = getAuth(app); // Authentication instance
 
   const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
 
   const [formData, setFormData] = useState({}); // Updated state name
   // console.log(formData);
@@ -34,17 +35,28 @@ const Login = () => {
       });
   };
 
-
   const handleSignOut = () => {
     signOut(auth)
-        .then(result => {
-            console.log(result);
-            setUsers(null);
-        })
-        .catch(error => {
-            console.log(error)
-        })
-}
+      .then((result) => {
+        console.log(result);
+        setUsers(null);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleGithubSignIn = () => {
+    signInWithPopup(auth, githubProvider)
+      .then((result) => {
+        const loggedUser = result.user;
+        console.log(loggedUser);
+        setUsers(loggedUser);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div>
@@ -94,25 +106,28 @@ const Login = () => {
       </form>
 
       <div className="text-center">
-      {
-                users ?
-                    <button className="btn btn-ghost" onClick={handleSignOut}>Sign out</button> :
-                    <>
-                        <button className="btn btn-ghost" onClick={handleGoogleSignIn}>Google login</button>
-                        {/* <button onClick={handleGithubSignIn}>Github Login</button> */}
-                    </>
-            }
-        
+        {users ? (
+          <button className="btn btn-ghost" onClick={handleSignOut}>
+            Sign out
+          </button>
+        ) : (
+          <>
+            <button className="btn btn-ghost" onClick={handleGoogleSignIn}>
+              Google login
+            </button>
+            <button className="btn btn-primary"  onClick={handleGithubSignIn}>Github Login</button>
+          </>
+        )}
       </div>
 
       <div className="p-15 m-15 text-5xl">
-        {
-          users && <div>
-            
-            {users.displayName} 
-            
-            <h1>{users.email}</h1></div>
-        }
+        {users && (
+          <div>
+            {users.displayName}
+
+            <h1>{users.email}</h1>
+          </div>
+        )}
       </div>
     </div>
   );
