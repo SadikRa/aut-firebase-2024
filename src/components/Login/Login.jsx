@@ -1,4 +1,4 @@
-import { getAuth, signInWithPopup } from "firebase/auth";
+import { getAuth, signInWithPopup, signOut } from "firebase/auth";
 import { app } from "../../firebase/firebase.config";
 import { useState } from "react";
 // import { GoogleAuthProvider } from "firebase/auth/web-extension";
@@ -12,7 +12,7 @@ const Login = () => {
   const [formData, setFormData] = useState({}); // Updated state name
   // console.log(formData);
 
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(null);
 
   // console.log(user)
   const handleSubmit = (event) => {
@@ -33,6 +33,18 @@ const Login = () => {
         console.log(error);
       });
   };
+
+
+  const handleSignOut = () => {
+    signOut(auth)
+        .then(result => {
+            console.log(result);
+            setUsers(null);
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
 
   return (
     <div>
@@ -82,9 +94,15 @@ const Login = () => {
       </form>
 
       <div className="text-center">
-        <button className="btn btn-ghost" onClick={handleGoogleSignIn}>
-          google
-        </button>
+      {
+                users ?
+                    <button className="btn btn-ghost" onClick={handleSignOut}>Sign out</button> :
+                    <>
+                        <button className="btn btn-ghost" onClick={handleGoogleSignIn}>Google login</button>
+                        {/* <button onClick={handleGithubSignIn}>Github Login</button> */}
+                    </>
+            }
+        
       </div>
 
       <div className="p-15 m-15 text-5xl">
