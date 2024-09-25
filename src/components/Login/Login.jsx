@@ -1,24 +1,53 @@
-import { getAuth } from "firebase/auth";
+import { getAuth, signInWithPopup } from "firebase/auth";
 import { app } from "../../firebase/firebase.config";
+import { useState } from "react";
+// import { GoogleAuthProvider } from "firebase/auth/web-extension";
+import { GoogleAuthProvider } from "firebase/auth";
 
 const Login = () => {
-  const auth = getAuth(app);
+  const auth = getAuth(app); // Authentication instance
 
-  console.log(auth);
+  const googleProvider = new GoogleAuthProvider();
+
+  const [formData, setFormData] = useState({}); // Updated state name
+  // console.log(formData);
+
+  const [user, setUser] = useState([]);
+
+  // console.log(user)
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const email = event.target.email.value; // Updated to "email" for better clarity
+    const password = event.target.password.value;
+    setFormData({ email, password }); // Use better naming for form data
+  };
+
+  const handleGoogleSignIn = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const loggedInUser = result.user;
+        console.log(loggedInUser);
+        setUser(loggedInUser);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div>
-      <div className="hero bg-base-200 min-h-screen">
+      <form onSubmit={handleSubmit} className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-            <form className="card-body">
+            <div className="card-body">
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Email</span>
                 </label>
                 <input
                   type="email"
-                  placeholder="email"
+                  name="email"
+                  placeholder="Enter your email"
                   className="input input-bordered"
                   required
                 />
@@ -29,7 +58,8 @@ const Login = () => {
                 </label>
                 <input
                   type="password"
-                  placeholder="password"
+                  name="password"
+                  placeholder="Enter your password"
                   className="input input-bordered"
                   required
                 />
@@ -40,11 +70,21 @@ const Login = () => {
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button className="btn btn-primary">Login</button>
+                <input
+                  className="btn btn-primary"
+                  type="submit"
+                  value="Login"
+                />
               </div>
-            </form>
+            </div>
           </div>
         </div>
+      </form>
+
+      <div className="text-center">
+        <button className="btn btn-ghost" onClick={handleGoogleSignIn}>
+          google
+        </button>
       </div>
     </div>
   );
