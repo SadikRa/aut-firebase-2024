@@ -1,6 +1,7 @@
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const auth = getAuth();
@@ -92,6 +93,7 @@ const Register = () => {
               </div>
               <div>
                 {success && <p className="text-green-600 p-5">{success}</p>}
+                <p>New to this website? Please <Link to="/login2">Login</Link></p>
               </div>
             </div>
           </div>
