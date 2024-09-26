@@ -1,20 +1,32 @@
-import { useState } from "react";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import React, { useState } from "react";
 
-const Login2 = () => {
-    const [formData, setFormData] = useState({});
+const Register = () => {
+  const auth = getAuth();
 
-  const handleSubmit = (event) => {
+  // const [formData, setFormData] = useState({});
+  const [registerError, setRegisterError] = useState("");
+
+  const handleRegister = (event) => {
     event.preventDefault();
     const email = event.target.email.value; // Updated to "email" for better clarity
     const password = event.target.password.value;
-    setFormData({ email, password }); // Use better naming for form data
+    // setFormData({ email, password }); // Use better naming for form data
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        const users = result.user;
+        console.log(users);
+      })
+      .catch((error) => {
+        console.error("error", error);
+        setRegisterError(error.message);
+      });
   };
-
-
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="hero bg-base-200 min-h-screen">
+      <form onSubmit={handleRegister} className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
             <div className="card-body">
@@ -41,25 +53,24 @@ const Login2 = () => {
                   className="input input-bordered"
                   required
                 />
-                <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
-                    Forgot password?
-                  </a>
-                </label>
               </div>
               <div className="form-control mt-6">
                 <input
                   className="btn btn-primary"
                   type="submit"
-                  value="Login"
+                  value="Register"
                 />
               </div>
+              {registerError && <p className="text-red-600 p-5" >{registerError}</p>}
             </div>
           </div>
         </div>
+      
       </form>
+
+      
     </div>
   );
 };
 
-export default Login2;
+export default Register;
