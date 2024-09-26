@@ -1,22 +1,42 @@
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
   const auth = getAuth();
 
   // const [formData, setFormData] = useState({});
   const [registerError, setRegisterError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = (event) => {
     event.preventDefault();
     const email = event.target.email.value; // Updated to "email" for better clarity
     const password = event.target.password.value;
+    const accepted = e.target.terms.checked;
     // setFormData({ email, password }); // Use better naming for form data
+    setRegisterError("");
+    setSuccess("");
+
+    if (password.length < 6) {
+      setRegisterError("Password should be at least 6 characters or longer");
+      return;
+    } else if (!/[A-Z]/.test(password)) {
+      setRegisterError(
+        "Your password should have at least one upper case characters."
+      );
+      return;
+    } else if (!accepted) {
+      setRegisterError("Please accept our terms and conditions!");
+      return;
+    }
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const users = result.user;
         console.log(users);
+        setSuccess("user create successful");
       })
       .catch((error) => {
         console.error("error", error);
@@ -47,12 +67,18 @@ const Register = () => {
                   <span className="label-text">Password</span>
                 </label>
                 <input
-                  type="password"
+                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Enter your password"
                   className="input input-bordered"
                   required
                 />
+                <span
+                  className=""
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash></FaEyeSlash> : <FaEye></FaEye>}
+                </span>
               </div>
               <div className="form-control mt-6">
                 <input
@@ -61,14 +87,18 @@ const Register = () => {
                   value="Register"
                 />
               </div>
-              {registerError && <p className="text-red-600 p-5" >{registerError}</p>}
+              <div>
+                {registerError && (
+                  <p className="text-red-600 p-5">{registerError}</p>
+                )}
+              </div>
+              <div>
+                {success && <p className="text-green-600 p-5">{success}</p>}
+              </div>
             </div>
           </div>
         </div>
-      
       </form>
-
-      
     </div>
   );
 };
