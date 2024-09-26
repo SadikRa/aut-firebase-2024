@@ -14,7 +14,6 @@ const Register = () => {
     event.preventDefault();
     const email = event.target.email.value; // Updated to "email" for better clarity
     const password = event.target.password.value;
-    const accepted = e.target.terms.checked;
     // setFormData({ email, password }); // Use better naming for form data
     setRegisterError("");
     setSuccess("");
@@ -26,9 +25,6 @@ const Register = () => {
       setRegisterError(
         "Your password should have at least one upper case characters."
       );
-      return;
-    } else if (!accepted) {
-      setRegisterError("Please accept our terms and conditions!");
       return;
     }
 
@@ -66,19 +62,21 @@ const Register = () => {
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
-                <input
-                   type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Enter your password"
-                  className="input input-bordered"
-                  required
-                />
-                <span
-                  className=""
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <FaEyeSlash></FaEyeSlash> : <FaEye></FaEye>}
-                </span>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Enter your password"
+                    className="input input-bordered w-full pr-10" // Padding-right for the icon
+                    required
+                  />
+                  <span
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
               </div>
               <div className="form-control mt-6">
                 <input
