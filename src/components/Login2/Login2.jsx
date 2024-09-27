@@ -80,6 +80,7 @@ const Login2 = () => {
                   required
                 />
               </div>
+              
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Password</span>
